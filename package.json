@@ -1,0 +1,12 @@
+{
+  "name": "limonade",
+  "version": "1.0.0",
+  "description": "Math library",
+  "main": "src/index.ts",
+  "repository": "git@github.com:blolya/limonade.git",
+  "author": "blolya <mast-94@mail.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
+}
