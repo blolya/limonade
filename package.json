@@ -2,11 +2,14 @@
   "name": "limonade",
   "version": "1.0.0",
   "description": "Math library",
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "repository": "git@github.com:blolya/limonade.git",
   "author": "blolya <mast-94@mail.ru>",
   "license": "MIT",
   "dependencies": {
+    "@types/express": "^4.17.13",
+    "express": "^4.18.1",
     "typescript": "^4.7.4"
-  }
+  },
+  "type": "module"
 }

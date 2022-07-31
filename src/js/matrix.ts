@@ -1,4 +1,4 @@
-class Matrix<T> {
+export class Matrix<T> {
     constructor(data: T[][]) {
         this._size = [data.length, data[0].length];
         this._data = data;
@@ -65,18 +65,43 @@ class Matrix<T> {
         this.forEach( (val, [_, col]) => data[col].push(val) );
         return new Matrix(data);
     }
+    rows(): Row<T>[] {
+        return this._data.map( row => new Row(row) );
+    }
+    cols(): Col<T>[] {
+        return this.transpose().rows().map( row => new Col(row.consume()[0]) );
+    }
 
     private _size: [number, number];
     private _data: T[][];
 }
+import {Vec} from './vector.js';
 
-function add(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
+export class Row<T> extends Matrix<T> {
+    constructor(data: T[]) {
+        super([data]);
+    }
+    toVec(): Vec<T> {
+        return new Vec(this.flatten());
+    }
+}
+export class Col<T> extends Matrix<T> {
+    constructor(data: T[]) {
+        let _data = data.map(e => [e]);
+        super(_data);
+    }
+    toVec(): Vec<T> {
+        return new Vec(this.flatten());
+    }
+}
+
+export function add(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
     return lhs.zip(rhs).map( ([v1, v2]) => v1 + v2 );
 }
-function sub(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
+export function sub(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
     return lhs.zip(rhs).map( ([v1, v2]) => v1 - v2 );
 }
-function mul(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
+export function mul(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
     if (lhs.size()[1] != rhs.size()[0]) {
         throw Error();
     }
@@ -91,14 +116,14 @@ function mul(lhs: Matrix<number>, rhs: Matrix<number>): Matrix<number> {
     })
     return matrix;
 }
-function mul_scal(matrix: Matrix<number>, num: number): Matrix<number> {
+export function mul_scal(matrix: Matrix<number>, num: number): Matrix<number> {
     return matrix.map( val => val * num );
 }
-function div_scal(matrix: Matrix<number>, num: number): Matrix<number> {
+export function div_scal(matrix: Matrix<number>, num: number): Matrix<number> {
     if (num == 0) throw Error();
     return matrix.map( val => val / num );
 }
-function zeros([rows, cols]: [number, number]): Matrix<number> {
+export function zeros([rows, cols]: [number, number]): Matrix<number> {
     let data: number[][] = [];
     for (let row = 0; row < rows; row++) {
         let row_data = [];
@@ -109,17 +134,7 @@ function zeros([rows, cols]: [number, number]): Matrix<number> {
     }
     return new Matrix(data);
 }
-function eye(size: number): Matrix<number> {
+export function eye(size: number): Matrix<number> {
     let matrix = zeros([size, size]).map( (val, [row, col]) => row == col ? 1 : val );
     return matrix;
 }
-
-const app = () => {
-    let obj = {1: "qwe"};
-    let m1 = new Matrix([[obj]]);
-    console.log(m1);
-    obj[1] = "ewq";
-    console.log(m1);
-}
-
-app();
