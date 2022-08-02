@@ -70,12 +70,16 @@
 //     private _objects: GameObject[];
 // }
 
-import {Vec3} from './vector.js';
+import * as V from './vector.js';
+import * as Q from './quaternion.js';
+import { rotate } from './rotation.js';
 
 const main = () => {
-    let v1 = new Vec3([1, 0, 0]);
-    let v2 = new Vec3([2, 1, 0]);
-    console.log(v1.dot(v2));
+    let v = new V.Vec([1, 0, 0]);
+    let rot = Q.Quat.from( -Math.PI / 2.0, new V.Vec([0, 1, 0]) );
+    let v_ = rotate(v, rot);
+        
+    console.log(v_);
 }
 
 main();

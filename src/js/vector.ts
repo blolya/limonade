@@ -46,30 +46,42 @@ export class Vec<T> {
         }
         return this.zip(rhs).map( (val, i) => f(val, i));
     }
-    
+    consume(): T[] {
+        return this._data;
+    }
     private _data: T[];
     private _len: number;
 }
 
-export class Vec3 extends Vec<number> {
-    constructor(data: [number, number, number]) {
-        super(data);
-    }
-    
-    cross(rhs: Vec3): Vec3 {
-        let x = this.get(1) * rhs.get(2) - this.get(2) * rhs.get(1);
-        let y = this.get(2) * rhs.get(0) - this.get(0) * rhs.get(2);
-        let z = this.get(0) * rhs.get(1) - this.get(1) * rhs.get(0);
+export type VecNum = Vec<number>;
 
-        return new Vec3([x, y, z]);
-    }
-    dot(rhs: Vec3): number {
-        return this.zip(rhs).fold(0, (acc, [v1, v2]) => acc + v1 * v2);
-    }
-    scal(rhs: number) {
-        return this.map( (val) => val * rhs );
-    }
-    add(rhs: Vec3) {
-        return this.zipWith(rhs, ([v1, v2]) => v1 + v2);
-    }
+export function dot(lhs: VecNum, rhs: VecNum): number {
+    return lhs.zip(rhs).fold(0, (acc, [v1, v2]) => acc + v1 * v2);
+}
+export function scal(vec: VecNum, scal: number): VecNum {
+    return vec.map( (val) => val * scal );
+}
+export function add(lhs: VecNum, rhs: VecNum): VecNum {
+    return lhs.zipWith(rhs, ([v1, v2]) => v1 + v2);
+}
+export function sub(lhs: VecNum, rhs: VecNum): VecNum {
+    return lhs.zipWith(rhs, ([v1, v2]) => v1 - v2);
+}
+export function cross(lhs: VecNum, rhs: VecNum): VecNum {
+    if (lhs.len() != 3 || rhs.len() != 3) throw Error('Both vectors must have the length of 3');
+    let x = lhs.get(1) * rhs.get(2) - lhs.get(2) * rhs.get(1);
+    let y = lhs.get(2) * rhs.get(0) - lhs.get(0) * rhs.get(2);
+    let z = lhs.get(0) * rhs.get(1) - lhs.get(1) * rhs.get(0);
+
+    return new Vec([x, y, z]);
+}
+
+export function norm(vec: VecNum): number {
+    return Math.sqrt( norm_sq(vec) );
+}
+export function norm_sq(vec: VecNum): number {
+    let x = vec.get(0);
+    let y = vec.get(1);
+    let z = vec.get(2);
+    return x*x + y*y + z*z;
 }
